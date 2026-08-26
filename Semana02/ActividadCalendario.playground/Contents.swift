@@ -54,10 +54,10 @@ let cuotaMensual = montoFinal / Double(meses)
 print("")
 print("===== PLAN DE PAGO =====")
 print("Producto: \(producto)")
-print("Monto de compra: S/ \(montoCompra)")
-print("Interés: S/ \(interes)")
-print("Monto final: S/ \(montoFinal)")
-print("Cuota mensual: S/ \(cuotaMensual)")
+print("Monto de compra: S/ \(String(format: "%.2f", montoCompra))")
+print("Interés: S/ \(String(format: "%.2f", interes))")
+print("Monto final: S/ \(String(format: "%.2f", montoFinal))")
+print("Cuota mensual: S/ \(String(format: "%.2f", cuotaMensual))")
 
 
 print("")
@@ -77,5 +77,5 @@ for mes in 1...meses {
         montoPendiente = 0
     }
     
-    print("\(mes)\tS/ \(montoInicial)\tS/ \(cuotaMensual)\tS/ \(montoPendiente)")
+    print("\(mes)\tS/ \(String(format: "%.2f", montoInicial))\tS/ \(String(format: "%.2f", cuotaMensual))\tS/ \(String(format: "%.2f", montoPendiente))")
 }
