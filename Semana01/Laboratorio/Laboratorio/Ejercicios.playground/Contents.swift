@@ -41,3 +41,17 @@ let total = montoBase + montoIGV
 
 // primer commit
 
+// mostrar los datos
+print("-----------------------------")
+print("Producto: \(producto)")
+print("Precio: S/ \(precio)")
+print("Cantidad: \(cantidad)")
+print("Subtotal: S/ \(subtotal)")
+print("Descuento: S/ \(descuento)")
+print("Monto base: S/ \(montoBase)")
+print("IGV: S/ \(montoIGV)")
+print("Total a pagar: S/ \(total)")
+print("-----------------------------")
+
+// segundo commit
+
