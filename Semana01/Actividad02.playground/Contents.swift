@@ -76,3 +76,24 @@ print("Monto de compra: S/ \(montoCompra)")
 print("Interés: S/ \(interes)")
 print("Monto final: S/ \(montoFinal)")
 print("Cuota mensual: S/ \(cuotaMensual)")
+
+
+print("")
+print("===== Tu CALENDARIO DE PAGOS =====")
+
+print("Mes\tMonto Inicial\tCuota Mensual\tResta x Pago")
+
+var montoPendiente = montoFinal
+
+for mes in 1...meses {
+    
+    let montoInicial = montoPendiente
+    
+    montoPendiente = montoPendiente - cuotaMensual
+    
+    if montoPendiente < 0 {
+        montoPendiente = 0
+    }
+    
+    print("\(mes)\tS/ \(montoInicial)\tS/ \(cuotaMensual)\tS/ \(montoPendiente)")
+}
