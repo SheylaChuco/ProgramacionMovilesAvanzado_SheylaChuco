@@ -46,3 +46,15 @@ if meses == 6 {
 
 print("Meses seleccionados: \(meses)")
 print("Interés: \(porcentajeInteres * 100)%")
+
+let interes = montoCompra * porcentajeInteres
+let montoFinal = montoCompra + interes
+let cuotaMensual = montoFinal / Double(meses)
+
+print("")
+print("===== PLAN DE PAGO =====")
+print("Producto: \(producto)")
+print("Monto de compra: S/ \(montoCompra)")
+print("Interés: S/ \(interes)")
+print("Monto final: S/ \(montoFinal)")
+print("Cuota mensual: S/ \(cuotaMensual)")
