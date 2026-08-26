@@ -21,3 +21,28 @@ print("Producto: \(producto)")
 print("Precio unitario: S/ \(precio)")
 print("Cantidad: \(cantidad)")
 print("Monto total de compra: S/ \(montoCompra)")
+
+print("")
+print("===== PLAN DE PAGO =====")
+print("6  meses -> 20% de interés")
+print("12 meses -> 40% de interés")
+print("24 meses -> 60% de interés")
+
+print("")
+print("Ingrese el número de meses:")
+let meses = Int(readLine() ?? "0") ?? 0
+
+var porcentajeInteres = 0.0
+
+if meses == 6 {
+    porcentajeInteres = 0.20
+} else if meses == 12 {
+    porcentajeInteres = 0.40
+} else if meses == 24 {
+    porcentajeInteres = 0.60
+} else {
+    print("Plan de pago no válido")
+}
+
+print("Meses seleccionados: \(meses)")
+print("Interés: \(porcentajeInteres * 100)%")
