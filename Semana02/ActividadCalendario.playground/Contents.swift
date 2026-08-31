@@ -75,108 +75,48 @@ print("Monto final: S/ \(String(format: "%.2f", montoFinal))")
 print("Cuota mensual: S/ \(String(format: "%.2f", cuotaMensual))")
 
 // ============================================================
-// INICIO DEL COMMIT 2
-// ADELANTO DE PAGO
+// GENERAR CALENDARIO
 // ============================================================
 
-var respuestaAdelanto = ""
+let calendario = Calendar.current
+let fechaActual = Date()
 
-// VALIDAR SI / NO
+let formatoFecha = DateFormatter()
+formatoFecha.dateFormat = "dd/MM/yyyy"
 
-while respuestaAdelanto != "SI" && respuestaAdelanto != "NO" {
-    
-    print("")
-    print("¿Tienes pensado realizar un adelanto de pago? (SI/NO):")
-    
-    respuestaAdelanto = (readLine() ?? "").uppercased()
-    
-    if respuestaAdelanto != "SI" && respuestaAdelanto != "NO" {
-        print("Respuesta no válida.")
-        print("Por favor, ingrese SI o NO.")
-    }
-}
+print("")
+print("===== CALENDARIO DE PAGOS =====")
+print("")
 
-// VARIABLES DEL ADELANTO
+print("Mes\tFecha\t\tMonto Inicial\tPago\t\tResta por Pagar")
 
-var mesAdelanto = 0
-var montoAdelanto = 0.0
+var montoPendiente = montoFinal
 
-// SI QUIERE REALIZAR UN ADELANTO
-
-if respuestaAdelanto == "SI" {
+for mes in 1...meses {
     
-    print("")
-    print("===== MESES DEL PLAN =====")
-    print("")
-    print("Mes\tFecha")
+    let montoInicial = montoPendiente
     
-    // CONFIGURAR FECHAS
+    montoPendiente = montoPendiente - cuotaMensual
     
-    let calendario = Calendar.current
-    let fechaActual = Date()
-    
-    let formatoFecha = DateFormatter()
-    formatoFecha.dateFormat = "dd/MM/yyyy"
-    
-    // MOSTRAR LOS MESES DISPONIBLES
-    
-    for mes in 1...meses {
-        
-        if let fechaPago = calendario.date(
-            byAdding: .month,
-            value: mes,
-            to: fechaActual
-        ) {
-            
-            print("\(mes)\t\(formatoFecha.string(from: fechaPago))")
-        }
+    if abs(montoPendiente) < 0.01 {
+        montoPendiente = 0
     }
     
-    // SELECCIONAR MES
+    var fechaPago = ""
     
-    print("")
-    print("¿En qué mes hará un pago adelantado?")
-    mesAdelanto = Int(readLine() ?? "0") ?? 0
-    
-    // VALIDAR MES
-    
-    while mesAdelanto < 1 || mesAdelanto > meses {
-        
-        print("")
-        print("Mes no válido.")
-        print("Ingrese un número entre 1 y \(meses):")
-        
-        mesAdelanto = Int(readLine() ?? "0") ?? 0
+    if let fecha = calendario.date(
+        byAdding: .month,
+        value: mes,
+        to: fechaActual
+    ) {
+        fechaPago = formatoFecha.string(from: fecha)
     }
     
-    // PEDIR MONTO DEL ADELANTO
-    
-    print("")
-    print("Ingrese el monto a pagar ese mes (S/):")
-    montoAdelanto = Double(readLine() ?? "0") ?? 0.0
-    
-    // VALIDAR MONTO
-    
-    while montoAdelanto <= 0 {
-        
-        print("")
-        print("Monto no válido.")
-        print("El monto debe ser mayor que S/ 0.00.")
-        
-        print("")
-        print("Ingrese el monto a pagar ese mes (S/):")
-        montoAdelanto = Double(readLine() ?? "0") ?? 0.0
-    }
-    
-    // MOSTRAR INFORMACIÓN DEL ADELANTO
-    
-    print("")
-    print("===== ADELANTO REGISTRADO =====")
-    
-    print("Mes del adelanto: \(mesAdelanto)")
-    print("Monto del adelanto: S/ \(String(format: "%.2f", montoAdelanto))")
+    print(
+        "\(mes)\t\(fechaPago)\tS/ \(String(format: "%.2f", montoInicial))\tS/ \(String(format: "%.2f", cuotaMensual))\tS/ \(String(format: "%.2f", montoPendiente))"
+    )
 }
 
 // ============================================================
-// FIN DEL COMMIT 2
+// FIN DEL COMMIT 3
 // ============================================================
