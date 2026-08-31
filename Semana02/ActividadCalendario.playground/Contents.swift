@@ -35,7 +35,9 @@ print("24 meses -> 60% de interés")
 
 print("")
 
+// ============================================================
 // VALIDACIÓN DEL PLAN
+// ============================================================
 
 var meses = 0
 var porcentajeInteres = 0.0
@@ -59,7 +61,9 @@ while meses != 6 && meses != 12 && meses != 24 {
     }
 }
 
+// ============================================================
 // CÁLCULOS
+// ============================================================
 
 let interes = montoCompra * porcentajeInteres
 let montoFinal = montoCompra + interes
@@ -75,7 +79,100 @@ print("Monto final: S/ \(String(format: "%.2f", montoFinal))")
 print("Cuota mensual: S/ \(String(format: "%.2f", cuotaMensual))")
 
 // ============================================================
-// GENERAR CALENDARIO
+// ADELANTO DE PAGO
+// ============================================================
+
+var respuestaAdelanto = ""
+
+while respuestaAdelanto != "SI" && respuestaAdelanto != "NO" {
+    
+    print("")
+    print("¿Tienes pensado realizar un adelanto de pago? (SI/NO):")
+    
+    respuestaAdelanto = (readLine() ?? "").uppercased()
+    
+    if respuestaAdelanto != "SI" && respuestaAdelanto != "NO" {
+        print("Respuesta no válida.")
+        print("Por favor, ingrese SI o NO.")
+    }
+}
+
+var mesAdelanto = 0
+var montoAdelanto = 0.0
+
+// ============================================================
+// SI EXISTE ADELANTO
+// ============================================================
+
+if respuestaAdelanto == "SI" {
+    
+    print("")
+    print("===== MESES DEL PLAN =====")
+    print("")
+    print("Mes\tFecha")
+    
+    let calendario = Calendar.current
+    let fechaActual = Date()
+    
+    let formatoFecha = DateFormatter()
+    formatoFecha.dateFormat = "dd/MM/yyyy"
+    
+    // MOSTRAR MESES DISPONIBLES
+    
+    for mes in 1...meses {
+        
+        if let fechaPago = calendario.date(
+            byAdding: .month,
+            value: mes,
+            to: fechaActual
+        ) {
+            
+            print("\(mes)\t\(formatoFecha.string(from: fechaPago))")
+        }
+    }
+    
+    // SELECCIONAR MES
+    
+    print("")
+    print("¿En qué mes hará un pago adelantado?")
+    mesAdelanto = Int(readLine() ?? "0") ?? 0
+    
+    // VALIDAR MES
+    
+    while mesAdelanto < 1 || mesAdelanto > meses {
+        
+        print("")
+        print("Mes no válido.")
+        print("Ingrese un número entre 1 y \(meses):")
+        
+        mesAdelanto = Int(readLine() ?? "0") ?? 0
+    }
+    
+    // PEDIR MONTO
+    
+    print("")
+    print("Ingrese el monto a pagar ese mes (S/):")
+    montoAdelanto = Double(readLine() ?? "0") ?? 0.0
+    
+    // VALIDAR MONTO
+    
+    while montoAdelanto <= 0 {
+        
+        print("")
+        print("Monto no válido.")
+        print("El monto debe ser mayor que S/ 0.00.")
+        
+        print("")
+        print("Ingrese el monto a pagar ese mes (S/):")
+        montoAdelanto = Double(readLine() ?? "0") ?? 0.0
+    }
+    
+    print("")
+    print("Adelanto registrado correctamente.")
+}
+
+// ============================================================
+// CALENDARIO FINAL
 // ============================================================
 
 let calendario = Calendar.current
@@ -91,16 +188,39 @@ print("")
 print("Mes\tFecha\t\tMonto Inicial\tPago\t\tResta por Pagar")
 
 var montoPendiente = montoFinal
+var mesesPagados = 0
 
 for mes in 1...meses {
     
     let montoInicial = montoPendiente
     
-    montoPendiente = montoPendiente - cuotaMensual
+    // CALCULAR PAGO DEL MES
+    
+    var pago = cuotaMensual
+    
+    // AGREGAR ADELANTO EN EL MES SELECCIONADO
+    
+    if mes == mesAdelanto {
+        pago = cuotaMensual + montoAdelanto
+    }
+    
+    // EVITAR PAGAR MÁS DE LO QUE SE DEBE
+    
+    if pago > montoPendiente {
+        pago = montoPendiente
+    }
+    
+    montoPendiente = montoPendiente - pago
+    
+    // CORREGIR PEQUEÑOS DECIMALES
     
     if abs(montoPendiente) < 0.01 {
         montoPendiente = 0
     }
+    
+    mesesPagados += 1
+    
+    // CALCULAR FECHA
     
     var fechaPago = ""
     
@@ -109,14 +229,32 @@ for mes in 1...meses {
         value: mes,
         to: fechaActual
     ) {
+        
         fechaPago = formatoFecha.string(from: fecha)
     }
     
     print(
-        "\(mes)\t\(fechaPago)\tS/ \(String(format: "%.2f", montoInicial))\tS/ \(String(format: "%.2f", cuotaMensual))\tS/ \(String(format: "%.2f", montoPendiente))"
+        "\(mes)\t\(fechaPago)\tS/ \(String(format: "%.2f", montoInicial))\tS/ \(String(format: "%.2f", pago))\tS/ \(String(format: "%.2f", montoPendiente))"
     )
+    
+    // SI YA SE PAGÓ TODO
+    
+    if montoPendiente == 0 {
+        break
+    }
 }
 
 // ============================================================
-// FIN DEL COMMIT 3
+// RESUMEN FINAL
 // ============================================================
+
+print("")
+print("===== RESUMEN =====")
+
+print("Meses pagados: \(mesesPagados) de \(meses)")
+print("Saldo pendiente: S/ \(String(format: "%.2f", montoPendiente))")
+
+if montoPendiente == 0 {
+    print("¡Pago completado!")
+}
+
