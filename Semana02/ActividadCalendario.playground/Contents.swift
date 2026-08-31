@@ -30,18 +30,25 @@ print("24 meses -> 60% de interés")
 
 print("")
 print("Ingrese el número de meses:")
-let meses = Int(readLine() ?? "0") ?? 0
-
+var meses = 0
 var porcentajeInteres = 0.0
 
-if meses == 6 {
-    porcentajeInteres = 0.20
-} else if meses == 12 {
-    porcentajeInteres = 0.40
-} else if meses == 24 {
-    porcentajeInteres = 0.60
-} else {
-    print("Plan de pago no válido")
+while meses != 6 && meses != 12 && meses != 24 {
+    
+    print("Ingrese el número de meses:")
+    meses = Int(readLine() ?? "0") ?? 0
+    
+    if meses == 6 {
+        porcentajeInteres = 0.20
+    } else if meses == 12 {
+        porcentajeInteres = 0.40
+    } else if meses == 24 {
+        porcentajeInteres = 0.60
+    } else {
+        print("Plan de pago no válido.")
+        print("Por favor, seleccione 6, 12 o 24 meses.")
+        print("")
+    }
 }
 
 print("Meses seleccionados: \(meses)")
