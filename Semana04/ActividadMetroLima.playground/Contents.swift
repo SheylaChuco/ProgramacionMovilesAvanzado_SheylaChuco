@@ -140,3 +140,36 @@ estacionesMetroLima.merge(estacionesLinea1) { (actual, _) in actual }
 estacionesMetroLima.merge(estacionesLinea2) { (actual, _) in actual }
 estacionesMetroLima.merge(estacionesLinea3) { (actual, _) in actual }
 estacionesMetroLima.merge(estacionesLinea4) { (actual, _) in actual }
+
+
+import Foundation
+
+// Normaliza: minúsculas, sin espacios extra, sin tildes/diacríticos
+func normalizar(_ texto: String) -> String {
+    return texto
+        .folding(options: .diacriticInsensitive, locale: .current)
+        .lowercased()
+        .trimmingCharacters(in: .whitespaces)
+}
+
+// Índice de búsqueda: nombre normalizado -> lista de estaciones que coinciden
+var indiceBusqueda: [String: [Estacion]] = [:]
+
+func registrarEnIndice(_ diccionarioLinea: [String: Estacion]) {
+    for estacion in diccionarioLinea.values {
+        let clave = normalizar(estacion.nombre)
+        indiceBusqueda[clave, default: []].append(estacion)
+    }
+}
+
+registrarEnIndice(estacionesLinea1)
+registrarEnIndice(estacionesLinea2)
+registrarEnIndice(estacionesLinea3)
+registrarEnIndice(estacionesLinea4)
+
+// RF-01: Búsqueda tolerante a mayúsculas, espacios y tildes
+func buscarEstacion(_ entrada: String) -> [Estacion] {
+    let clave = normalizar(entrada)
+    return indiceBusqueda[clave] ?? []
+}
+
