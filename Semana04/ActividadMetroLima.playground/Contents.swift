@@ -298,7 +298,26 @@ func mostrarTarifasYHorarios() {
     print("Línea 3 y Línea 4: Tarifas y horarios no definidos (líneas proyectadas)")
     print("")
 }
+// MARK: - Conexiones entre líneas 
 
+func mostrarConexionesEntreLineas() {
+    let estacionesConConexion = todasLasEstaciones
+        .filter { !$0.conexiones.isEmpty }
+        .sorted { $0.nombre < $1.nombre }
+
+    print("=====================================================")
+    print("ESTACIONES DE TRANSBORDO ENTRE LÍNEAS")
+    print("=====================================================")
+
+    if estacionesConConexion.isEmpty {
+        print("No se registran transbordos.")
+    } else {
+        for estacion in estacionesConConexion {
+            print("\(estacion.nombre) (\(estacion.linea)) -> conecta con: \(estacion.conexiones.joined(separator: ", "))")
+        }
+    }
+    print("")
+}
 // MARK: - Menú principal
 
 func iniciarSistema() {
@@ -310,10 +329,11 @@ func iniciarSistema() {
         print("=====================================================")
         print("1. Buscar Estación")
         print("2. Filtrar por Línea")
-        print("3. Tarifas y Horarios")
-        print("4. Salir")
+        print("3. Ver Conexiones entre Líneas")
+        print("4. Tarifas y Horarios")
+        print("5. Salir")
         print("=====================================================")
-        print("Seleccione una opción (1-4): ", terminator: "")
+        print("Seleccione una opción (1-5): ", terminator: "")
 
         guard let entrada = readLine(), !entrada.trimmingCharacters(in: .whitespaces).isEmpty else {
             continue
@@ -331,12 +351,14 @@ func iniciarSistema() {
         case 2:
             mostrarSubmenuLineas()
         case 3:
-            mostrarTarifasYHorarios()
+            mostrarConexionesEntreLineas()
         case 4:
+            mostrarTarifasYHorarios()
+        case 5:
             print("Gracias por usar el Sistema de Información del Metro de Lima. ¡Buen viaje!")
             continuar = false
         default:
-            print("Opción fuera de rango (1-4). Intente nuevamente.\n")
+            print("Opción fuera de rango (1-5). Intente nuevamente.\n")
         }
     }
 }
