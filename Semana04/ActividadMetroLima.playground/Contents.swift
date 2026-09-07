@@ -308,26 +308,58 @@ func consultarEstacion(_ entrada: String) {
     }
 }
 
-// RF-04: Planificador de rutas y transbordos
-func planificarRuta(_ entrada: String) {
-    guard let estacion = resolverEstacion(entrada) else { return }
 
+
+func mostrarTarifasYHorarios() {
     print("=====================================================")
-    print("PLANIFICADOR DE RUTA DESDE: \(estacion.nombre) (\(estacion.linea))")
+    print("TARIFAS Y HORARIOS")
     print("=====================================================")
-
-    if estacion.conexiones.isEmpty {
-        print("Esta estación no registra transbordos directos.")
-    } else {
-        print("Transbordos disponibles:")
-        for conexion in estacion.conexiones {
-            print("- \(conexion)")
-        }
-    }
-
-    if let sedes = estacion.sedesDeportivas, !sedes.isEmpty {
-        print("\nSede(s) deportiva(s) cercana(s): \(sedes.joined(separator: ", "))")
-        print("Recomendación: siga las indicaciones de transbordo hacia la avenida/estación conectora.")
-    }
+    print("Línea 1: S/ 1.50 (Tarjeta propia L1)")
+    print("  Horario: Lunes a Sábado 05:00-22:00 | Domingos y feriados 05:30-22:00")
+    print("Línea 2: S/ 1.40 (Tarjeta Interoperable de Transporte - TIT)")
+    print("  Horario: 05:00-22:00 aprox. (dato oficial exacto no publicado)")
+    print("Línea 3 y Línea 4: Tarifas y horarios no definidos (líneas proyectadas)")
     print("")
 }
+
+func iniciarSistema() {
+    var continuar = true
+
+    while continuar {
+        print("=====================================================")
+        print("     SISTEMA DE INFORMACIÓN - METRO DE LIMA 2026")
+        print("=====================================================")
+        print("1. Buscar Estación")
+        print("2. Filtrar por Línea")
+        print("3. Tarifas y Horarios")
+        print("4. Salir")
+        print("=====================================================")
+        print("Seleccione una opción (1-4): ", terminator: "")
+
+        guard let entrada = readLine(), !entrada.trimmingCharacters(in: .whitespaces).isEmpty else {
+            continue // Enter vacío: se ignora y se mantiene el menú
+        }
+
+        guard let opcion = Int(entrada.trimmingCharacters(in: .whitespaces)) else {
+            print("Entrada inválida. Por favor ingrese un número del menú.\n")
+            continue
+        }
+
+        switch opcion {
+        case 1:
+            print("Ingrese el nombre de la estación a buscar: ", terminator: "")
+            if let nombre = readLine() { consultarEstacion(nombre) }
+        case 2:
+            mostrarSubmenuLineas()
+        case 3:
+            mostrarTarifasYHorarios()
+        case 4:
+            print("Gracias por usar el Sistema de Información del Metro de Lima. ¡Buen viaje!")
+            continuar = false
+        default:
+            print("Opción fuera de rango (1-4). Intente nuevamente.\n")
+        }
+    }
+}
+
+iniciarSistema()
