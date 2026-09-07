@@ -141,10 +141,10 @@ estacionesMetroLima.merge(estacionesLinea2) { (actual, _) in actual }
 estacionesMetroLima.merge(estacionesLinea3) { (actual, _) in actual }
 estacionesMetroLima.merge(estacionesLinea4) { (actual, _) in actual }
 
-
 import Foundation
 
-// Normaliza: minúsculas, sin espacios extra, sin tildes/diacríticos
+// MARK: - Normalización y búsqueda (RF-01)
+
 func normalizar(_ texto: String) -> String {
     return texto
         .folding(options: .diacriticInsensitive, locale: .current)
@@ -152,7 +152,6 @@ func normalizar(_ texto: String) -> String {
         .trimmingCharacters(in: .whitespaces)
 }
 
-// Índice de búsqueda: nombre normalizado -> lista de estaciones que coinciden
 var indiceBusqueda: [String: [Estacion]] = [:]
 
 func registrarEnIndice(_ diccionarioLinea: [String: Estacion]) {
@@ -167,13 +166,37 @@ registrarEnIndice(estacionesLinea2)
 registrarEnIndice(estacionesLinea3)
 registrarEnIndice(estacionesLinea4)
 
-// RF-01: Búsqueda tolerante a mayúsculas, espacios y tildes
 func buscarEstacion(_ entrada: String) -> [Estacion] {
     let clave = normalizar(entrada)
     return indiceBusqueda[clave] ?? []
 }
 
-// RF-02: Genera y muestra la ficha técnica de una estación
+// MARK: - Resolución de duplicados (compartida entre funciones)
+
+func resolverEstacion(_ entrada: String) -> Estacion? {
+    let resultados = buscarEstacion(entrada)
+
+    switch resultados.count {
+    case 0:
+        print("Estación no localizada. Verifique el nombre e intente de nuevo.\n")
+        return nil
+    case 1:
+        return resultados[0]
+    default:
+        print("Se encontraron \(resultados.count) estaciones con ese nombre. ¿Cuál desea consultar?")
+        for (indice, estacion) in resultados.enumerated() {
+            print("\(indice + 1). \(estacion.nombre) - \(estacion.linea)")
+        }
+        guard let opcion = readLine(), let numero = Int(opcion), numero >= 1, numero <= resultados.count else {
+            print("Opción inválida.\n")
+            return nil
+        }
+        return resultados[numero - 1]
+    }
+}
+
+// MARK: - Ficha técnica (RF-02)
+
 func mostrarFicha(_ estacion: Estacion) {
     print("=====================================================")
     print("FICHA DE ESTACIÓN: \(estacion.nombre)")
@@ -207,37 +230,21 @@ func mostrarFicha(_ estacion: Estacion) {
     print("=====================================================\n")
 }
 
-// Flujo completo: busca y decide qué mostrar según cuántos resultados haya
 func consultarEstacion(_ entrada: String) {
-    let resultados = buscarEstacion(entrada)
-
-    switch resultados.count {
-    case 0:
-        print("Estación no localizada. Verifique el nombre e intente de nuevo.\n")
-    case 1:
-        mostrarFicha(resultados[0])
-    default:
-        print("Se encontraron \(resultados.count) estaciones con ese nombre. ¿Cuál desea consultar?")
-        for (indice, estacion) in resultados.enumerated() {
-            print("\(indice + 1). \(estacion.nombre) - \(estacion.linea)")
-        }
-        if let opcion = readLine(), let numero = Int(opcion), numero >= 1, numero <= resultados.count {
-            mostrarFicha(resultados[numero - 1])
-        } else {
-            print("Opción inválida. Volviendo al menú.\n")
-        }
+    if let estacion = resolverEstacion(entrada) {
+        mostrarFicha(estacion)
     }
 }
 
-// Reunimos todas las estaciones en un solo array para poder filtrar
+// MARK: - Filtrado por línea (RF-03)
+
 var todasLasEstaciones: [Estacion] {
-    return estacionesLinea1.values + estacionesLinea2.values + estacionesLinea3.values + estacionesLinea4.values
+    return Array(estacionesLinea1.values) + Array(estacionesLinea2.values) + Array(estacionesLinea3.values) + Array(estacionesLinea4.values)
 }
 
-// RF-03: Filtrado de estaciones por línea seleccionada
 func filtrarPorLinea(_ linea: String) -> [Estacion] {
     return todasLasEstaciones.filter { $0.linea == linea }
-        .sorted { $0.nombre < $1.nombre } // orden alfabético para lectura más clara
+        .sorted { $0.nombre < $1.nombre }
 }
 
 func mostrarSubmenuLineas() {
@@ -263,7 +270,7 @@ func mostrarSubmenuLineas() {
     case 2: lineaSeleccionada = "L2"
     case 3: lineaSeleccionada = "L3"
     case 4: lineaSeleccionada = "L4"
-    case 5: return // volver, sin hacer nada más
+    case 5: return
     default:
         print("Opción fuera de rango. Volviendo al menú principal.\n")
         return
@@ -278,37 +285,7 @@ func mostrarSubmenuLineas() {
     print("")
 }
 
-// Devuelve la estación elegida, o nil si no se encontró o la elección fue inválida
-func resolverEstacion(_ entrada: String) -> Estacion? {
-    let resultados = buscarEstacion(entrada)
-
-    switch resultados.count {
-    case 0:
-        print("Estación no localizada. Verifique el nombre e intente de nuevo.\n")
-        return nil
-    case 1:
-        return resultados[0]
-    default:
-        print("Se encontraron \(resultados.count) estaciones con ese nombre. ¿Cuál desea consultar?")
-        for (indice, estacion) in resultados.enumerated() {
-            print("\(indice + 1). \(estacion.nombre) - \(estacion.linea)")
-        }
-        guard let opcion = readLine(), let numero = Int(opcion), numero >= 1, numero <= resultados.count else {
-            print("Opción inválida.\n")
-            return nil
-        }
-        return resultados[numero - 1]
-    }
-}
-
-// RF-02 simplificado ahora que existe resolverEstacion
-func consultarEstacion(_ entrada: String) {
-    if let estacion = resolverEstacion(entrada) {
-        mostrarFicha(estacion)
-    }
-}
-
-
+// MARK: - Tarifas y horarios (RF-02 general)
 
 func mostrarTarifasYHorarios() {
     print("=====================================================")
@@ -321,6 +298,8 @@ func mostrarTarifasYHorarios() {
     print("Línea 3 y Línea 4: Tarifas y horarios no definidos (líneas proyectadas)")
     print("")
 }
+
+// MARK: - Menú principal
 
 func iniciarSistema() {
     var continuar = true
@@ -337,7 +316,7 @@ func iniciarSistema() {
         print("Seleccione una opción (1-4): ", terminator: "")
 
         guard let entrada = readLine(), !entrada.trimmingCharacters(in: .whitespaces).isEmpty else {
-            continue // Enter vacío: se ignora y se mantiene el menú
+            continue
         }
 
         guard let opcion = Int(entrada.trimmingCharacters(in: .whitespaces)) else {
