@@ -278,3 +278,56 @@ func mostrarSubmenuLineas() {
     print("")
 }
 
+// Devuelve la estación elegida, o nil si no se encontró o la elección fue inválida
+func resolverEstacion(_ entrada: String) -> Estacion? {
+    let resultados = buscarEstacion(entrada)
+
+    switch resultados.count {
+    case 0:
+        print("Estación no localizada. Verifique el nombre e intente de nuevo.\n")
+        return nil
+    case 1:
+        return resultados[0]
+    default:
+        print("Se encontraron \(resultados.count) estaciones con ese nombre. ¿Cuál desea consultar?")
+        for (indice, estacion) in resultados.enumerated() {
+            print("\(indice + 1). \(estacion.nombre) - \(estacion.linea)")
+        }
+        guard let opcion = readLine(), let numero = Int(opcion), numero >= 1, numero <= resultados.count else {
+            print("Opción inválida.\n")
+            return nil
+        }
+        return resultados[numero - 1]
+    }
+}
+
+// RF-02 simplificado ahora que existe resolverEstacion
+func consultarEstacion(_ entrada: String) {
+    if let estacion = resolverEstacion(entrada) {
+        mostrarFicha(estacion)
+    }
+}
+
+// RF-04: Planificador de rutas y transbordos
+func planificarRuta(_ entrada: String) {
+    guard let estacion = resolverEstacion(entrada) else { return }
+
+    print("=====================================================")
+    print("PLANIFICADOR DE RUTA DESDE: \(estacion.nombre) (\(estacion.linea))")
+    print("=====================================================")
+
+    if estacion.conexiones.isEmpty {
+        print("Esta estación no registra transbordos directos.")
+    } else {
+        print("Transbordos disponibles:")
+        for conexion in estacion.conexiones {
+            print("- \(conexion)")
+        }
+    }
+
+    if let sedes = estacion.sedesDeportivas, !sedes.isEmpty {
+        print("\nSede(s) deportiva(s) cercana(s): \(sedes.joined(separator: ", "))")
+        print("Recomendación: siga las indicaciones de transbordo hacia la avenida/estación conectora.")
+    }
+    print("")
+}
