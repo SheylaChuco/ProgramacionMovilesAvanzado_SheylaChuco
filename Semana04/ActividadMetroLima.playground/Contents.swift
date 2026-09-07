@@ -228,3 +228,53 @@ func consultarEstacion(_ entrada: String) {
         }
     }
 }
+
+// Reunimos todas las estaciones en un solo array para poder filtrar
+var todasLasEstaciones: [Estacion] {
+    return estacionesLinea1.values + estacionesLinea2.values + estacionesLinea3.values + estacionesLinea4.values
+}
+
+// RF-03: Filtrado de estaciones por línea seleccionada
+func filtrarPorLinea(_ linea: String) -> [Estacion] {
+    return todasLasEstaciones.filter { $0.linea == linea }
+        .sorted { $0.nombre < $1.nombre } // orden alfabético para lectura más clara
+}
+
+func mostrarSubmenuLineas() {
+    print("=====================================================")
+    print("SELECCIÓN DE LÍNEA - RED METRO")
+    print("=====================================================")
+    print("1. Línea 1 (Operativa - 26 estaciones)")
+    print("2. Línea 2 (5 operativas + 22 proyectadas)")
+    print("3. Línea 3 (Proyectada - 27 estaciones)")
+    print("4. Línea 4 (Proyectada - 20 estaciones)")
+    print("5. Volver al Menú Principal")
+    print("=====================================================")
+    print("Seleccione una opción: ", terminator: "")
+
+    guard let entrada = readLine(), let opcion = Int(entrada) else {
+        print("Entrada inválida. Volviendo al menú principal.\n")
+        return
+    }
+
+    let lineaSeleccionada: String
+    switch opcion {
+    case 1: lineaSeleccionada = "L1"
+    case 2: lineaSeleccionada = "L2"
+    case 3: lineaSeleccionada = "L3"
+    case 4: lineaSeleccionada = "L4"
+    case 5: return // volver, sin hacer nada más
+    default:
+        print("Opción fuera de rango. Volviendo al menú principal.\n")
+        return
+    }
+
+    let estaciones = filtrarPorLinea(lineaSeleccionada)
+    print("\n--- Estaciones de \(lineaSeleccionada) (\(estaciones.count)) ---")
+    for estacion in estaciones {
+        let estado = estacion.esProyectada ? "Proyectada" : "Operativa"
+        print("- \(estacion.nombre) [\(estado)]")
+    }
+    print("")
+}
+
