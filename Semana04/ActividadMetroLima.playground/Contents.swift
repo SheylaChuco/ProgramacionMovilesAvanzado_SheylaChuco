@@ -173,3 +173,58 @@ func buscarEstacion(_ entrada: String) -> [Estacion] {
     return indiceBusqueda[clave] ?? []
 }
 
+// RF-02: Genera y muestra la ficha técnica de una estación
+func mostrarFicha(_ estacion: Estacion) {
+    print("=====================================================")
+    print("FICHA DE ESTACIÓN: \(estacion.nombre)")
+    print("=====================================================")
+    print("Línea: \(estacion.linea)")
+    print("Estado: \(estacion.esProyectada ? "Proyectada (aún no construida)" : "Operativa")")
+    print("Avenidas de acceso: \(estacion.avenidas.joined(separator: ", "))")
+    print("Ascensores: \(estacion.tieneAscensores ? "Sí" : "No")")
+    print("Servicios higiénicos: \(estacion.tieneServiciosHigienicos ? "Sí" : "No")")
+    print("Vagones por tren: \(estacion.cantidadVagones)")
+
+    if let tarifa = estacion.tarifa {
+        print(String(format: "Tarifa: S/ %.2f", tarifa))
+    } else {
+        print("Tarifa: No definida (línea proyectada)")
+    }
+
+    if let horario = estacion.horario {
+        print("Horario: \(horario)")
+    } else {
+        print("Horario: No definido (línea proyectada)")
+    }
+
+    if !estacion.conexiones.isEmpty {
+        print("Conexiones: \(estacion.conexiones.joined(separator: ", "))")
+    }
+
+    if let sedes = estacion.sedesDeportivas, !sedes.isEmpty {
+        print("Sedes deportivas cercanas: \(sedes.joined(separator: ", "))")
+    }
+    print("=====================================================\n")
+}
+
+// Flujo completo: busca y decide qué mostrar según cuántos resultados haya
+func consultarEstacion(_ entrada: String) {
+    let resultados = buscarEstacion(entrada)
+
+    switch resultados.count {
+    case 0:
+        print("Estación no localizada. Verifique el nombre e intente de nuevo.\n")
+    case 1:
+        mostrarFicha(resultados[0])
+    default:
+        print("Se encontraron \(resultados.count) estaciones con ese nombre. ¿Cuál desea consultar?")
+        for (indice, estacion) in resultados.enumerated() {
+            print("\(indice + 1). \(estacion.nombre) - \(estacion.linea)")
+        }
+        if let opcion = readLine(), let numero = Int(opcion), numero >= 1, numero <= resultados.count {
+            mostrarFicha(resultados[numero - 1])
+        } else {
+            print("Opción inválida. Volviendo al menú.\n")
+        }
+    }
+}
