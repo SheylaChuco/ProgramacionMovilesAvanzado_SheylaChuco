@@ -267,5 +267,49 @@ func ubicacionEnLinea(_ estacion: Estacion) -> String {
         return "Entre \(anterior) y \(siguiente)"
     }
 }
+// =====================================================================
+// COMMIT 4 — feat: implementa ficha técnica de estación (RF-02)
+// =====================================================================
 
+func mostrarFicha(_ estacion: Estacion) {
+    print("=====================================================")
+    print("FICHA DE ESTACIÓN: \(estacion.nombre)")
+    print("=====================================================")
+    print("Línea: \(estacion.linea)")
+    print("Estado: \(estacion.esProyectada ? "Proyectada (aún no construida)" : "Operativa")")
+    print("Ubicación en la línea: \(ubicacionEnLinea(estacion))")
+    print("Avenidas de acceso: \(estacion.avenidas.joined(separator: ", "))")
+    print("Ascensores: \(estacion.tieneAscensores ? "Sí" : "No")")
+    print("Servicios higiénicos: \(estacion.tieneServiciosHigienicos ? "Sí" : "No")")
+    print("Vagones por tren: \(estacion.cantidadVagones)")
+
+    // Optional binding: si tarifa/horario son nil (línea proyectada),
+    // se avisa en vez de mostrar un dato falso o crashear.
+    if let tarifa = estacion.tarifa {
+        print(String(format: "Tarifa: S/ %.2f", tarifa))
+    } else {
+        print("Tarifa: No definida (línea proyectada)")
+    }
+
+    if let horario = estacion.horario {
+        print("Horario: \(horario)")
+    } else {
+        print("Horario: No definido (línea proyectada)")
+    }
+
+    if !estacion.conexiones.isEmpty {
+        print("Conexiones: \(estacion.conexiones.joined(separator: ", "))")
+    }
+
+    if let sedes = estacion.sedesDeportivas, !sedes.isEmpty {
+        print("Sedes deportivas cercanas: \(sedes.joined(separator: ", "))")
+    }
+    print("=====================================================\n")
+}
+
+func consultarEstacion(_ entrada: String) {
+    if let estacion = resolverEstacion(entrada) {
+        mostrarFicha(estacion)
+    }
+}
 
