@@ -404,3 +404,53 @@ func mostrarTarifasYHorarios() {
     print("")
 }
 
+// =====================================================================
+// COMMIT 8 — feat: implementa menú principal con manejo de errores
+// Cierra el prototipo: une RF-01 a RF-05 y el manejo de entradas inválidas
+// =====================================================================
+
+func iniciarSistema() {
+    var continuar = true
+
+    while continuar {
+        print("=====================================================")
+        print("     SISTEMA DE INFORMACIÓN - METRO DE LIMA 2026")
+        print("=====================================================")
+        print("1. Buscar Estación")
+        print("2. Filtrar por Línea")
+        print("3. Ver Conexiones entre Líneas")
+        print("4. Tarifas y Horarios")
+        print("5. Salir")
+        print("=====================================================")
+        print("Seleccione una opción (1-5): ", terminator: "")
+
+        // Enter vacío se ignora (no cuenta como error), tal como pide el documento.
+        guard let entrada = readLine(), !entrada.trimmingCharacters(in: .whitespaces).isEmpty else {
+            continue
+        }
+
+        guard let opcion = Int(entrada.trimmingCharacters(in: .whitespaces)) else {
+            print("Entrada inválida. Por favor ingrese un número del menú.\n")
+            continue
+        }
+
+        switch opcion {
+        case 1:
+            print("Ingrese el nombre de la estación a buscar: ", terminator: "")
+            if let nombre = readLine() { consultarEstacion(nombre) }
+        case 2:
+            mostrarSubmenuLineas()
+        case 3:
+            mostrarConexionesEntreLineas()
+        case 4:
+            mostrarTarifasYHorarios()
+        case 5:
+            print("Gracias por usar el Sistema de Información del Metro de Lima. ¡Buen viaje!")
+            continuar = false
+        default:
+            print("Opción fuera de rango (1-5). Intente nuevamente.\n")
+        }
+    }
+}
+
+iniciarSistema()
