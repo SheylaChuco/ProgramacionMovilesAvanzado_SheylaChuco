@@ -197,4 +197,75 @@ func resolverEstacion(_ entrada: String) -> Estacion? {
     }
 }
 
+// Arreglos que guardan el ORDEN real de las estaciones en su línea.
+// Un diccionario no garantiza orden, por eso esto se guarda aparte.
+let ordenLinea1: [String] = [
+    "villa el salvador", "parque industrial", "pumacahua", "villa maria",
+    "maria auxiliadora", "san juan", "atocongo", "jorge chavez", "ayacucho",
+    "cabitos", "angamos", "san borja sur", "la cultura", "arriola", "gamarra",
+    "miguel grau", "el angel", "presbitero maestro", "caja de agua",
+    "piramide del sol", "los jardines", "los postes", "san carlos",
+    "san martin", "santa rosa", "bayovar"
+]
+
+let ordenLinea2: [String] = [
+    "puerto del callao", "buenos aires", "juan pablo ii", "insurgentes",
+    "carmen de la legua", "oscar r benavides", "san marcos", "elio",
+    "la alborada", "tingo maria", "parque murillo", "plaza bolognesi",
+    "central l2", "plaza manco capac", "cangallo", "28 de julio",
+    "nicolas ayllon", "circunvalacion", "san juan de dios", "evitamiento",
+    "ovalo santa anita", "colectora industrial", "hermilio valdizan",
+    "mercado santa anita", "vista alegre", "prolongacion javier prado",
+    "municipalidad de ate"
+]
+
+let ordenLinea3: [String] = [
+    "el alamo", "huandoy", "2 de octubre", "villa sol", "naranjal",
+    "carlos izaguirre", "tomas valle", "bartolome de las casas",
+    "jose granda", "caqueta", "tacna", "garcilaso de la vega", "central l3",
+    "parque de la reserva", "museo de historia natural", "cesar canevaro",
+    "conde de san isidro l3", "andres aramburu", "huaca pucllana",
+    "parque central de miraflores", "parque reducto", "republica de panama",
+    "juana alarco", "alejandro velasco", "las gardenias", "los heroes",
+    "pedro miotta"
+]
+
+let ordenLinea4: [String] = [
+    "venezuela", "rafael escardo", "pando", "jose de sucre", "brasil",
+    "felipe salaverry", "guillermo prescott", "las palmeras",
+    "conde de san isidro l4", "rivera navarrete", "pablo carriquiry",
+    "la cultura l4", "san luis", "monterrico", "manuel olguin",
+    "los frutales", "la molina", "santa patricia", "mayorazgo",
+    "mercado santa anita l4"
+]
+
+// Dado una estación, busca su posición en el arreglo de orden de su línea
+// y arma el texto de "anterior / siguiente" o "inicial / final".
+func ubicacionEnLinea(_ estacion: Estacion) -> String {
+    let orden: [String]
+    switch estacion.linea {
+    case "L1": orden = ordenLinea1
+    case "L2": orden = ordenLinea2
+    case "L3": orden = ordenLinea3
+    case "L4": orden = ordenLinea4
+    default: return "No definido"
+    }
+
+    guard let claveEstacion = orden.first(where: { clave in
+        indiceBusqueda[clave]?.contains(where: { $0.nombre == estacion.nombre && $0.linea == estacion.linea }) ?? false
+    }), let indice = orden.firstIndex(of: claveEstacion) else {
+        return "No definido"
+    }
+
+    if indice == 0 {
+        return "Estación inicial de la línea"
+    } else if indice == orden.count - 1 {
+        return "Estación final de la línea"
+    } else {
+        let anterior = indiceBusqueda[orden[indice - 1]]?.first(where: { $0.linea == estacion.linea })?.nombre ?? "?"
+        let siguiente = indiceBusqueda[orden[indice + 1]]?.first(where: { $0.linea == estacion.linea })?.nombre ?? "?"
+        return "Entre \(anterior) y \(siguiente)"
+    }
+}
+
 
