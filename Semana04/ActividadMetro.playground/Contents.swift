@@ -312,4 +312,55 @@ func consultarEstacion(_ entrada: String) {
         mostrarFicha(estacion)
     }
 }
+// =====================================================================
+// COMMIT 5 — feat: implementa filtrado de estaciones por línea (RF-03)
+// =====================================================================
 
+// Arreglo con TODAS las estaciones juntas, para poder usar filter/sorted.
+// .values de un diccionario no es un Array por defecto, por eso el Array(...)
+var todasLasEstaciones: [Estacion] {
+    return Array(estacionesLinea1.values) + Array(estacionesLinea2.values) + Array(estacionesLinea3.values) + Array(estacionesLinea4.values)
+}
+
+func filtrarPorLinea(_ linea: String) -> [Estacion] {
+    return todasLasEstaciones.filter { $0.linea == linea }
+        .sorted { $0.nombre < $1.nombre }
+}
+
+func mostrarSubmenuLineas() {
+    print("=====================================================")
+    print("SELECCIÓN DE LÍNEA - RED METRO")
+    print("=====================================================")
+    print("1. Línea 1 (Operativa - 26 estaciones)")
+    print("2. Línea 2 (5 operativas + 22 proyectadas)")
+    print("3. Línea 3 (Proyectada - 27 estaciones)")
+    print("4. Línea 4 (Proyectada - 20 estaciones)")
+    print("5. Volver al Menú Principal")
+    print("=====================================================")
+    print("Seleccione una opción: ", terminator: "")
+
+    guard let entrada = readLine(), let opcion = Int(entrada) else {
+        print("Entrada inválida. Volviendo al menú principal.\n")
+        return
+    }
+
+    let lineaSeleccionada: String
+    switch opcion {
+    case 1: lineaSeleccionada = "L1"
+    case 2: lineaSeleccionada = "L2"
+    case 3: lineaSeleccionada = "L3"
+    case 4: lineaSeleccionada = "L4"
+    case 5: return
+    default:
+        print("Opción fuera de rango. Volviendo al menú principal.\n")
+        return
+    }
+
+    let estaciones = filtrarPorLinea(lineaSeleccionada)
+    print("\n--- Estaciones de \(lineaSeleccionada) (\(estaciones.count)) ---")
+    for estacion in estaciones {
+        let estado = estacion.esProyectada ? "Proyectada" : "Operativa"
+        print("- \(estacion.nombre) [\(estado)]")
+    }
+    print("")
+}
