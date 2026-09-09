@@ -138,3 +138,63 @@ let estacionesLinea4: [String: Estacion] = [
     "mercado santa anita l4": Estacion(nombre: "Mercado Santa Anita", linea: "L4", avenidas: ["Por definir"], tieneAscensores: true, tieneServiciosHigienicos: true, cantidadVagones: 6, conexiones: ["L2"], esProyectada: true, tarifa: nil, horario: nil, sedesDeportivas: nil)
 ]
 
+
+// Quita tildes, pasa a minúsculas y recorta espacios, para comparar nombres
+// sin depender de cómo los escriba el usuario.
+func normalizar(_ texto: String) -> String {
+    return texto
+        .folding(options: .diacriticInsensitive, locale: .current)
+        .lowercased()
+        .trimmingCharacters(in: .whitespaces)
+}
+
+// Diccionario auxiliar de búsqueda: nombre normalizado -> lista de
+// estaciones que coinciden (puede haber más de una, ej. "Central" en L2 y L3).
+// Usar diccionario aquí es lo que permite que la búsqueda sea prácticamente
+// instantánea, en vez de tener que revisar estación por estación.
+var indiceBusqueda: [String: [Estacion]] = [:]
+
+func registrarEnIndice(_ diccionarioLinea: [String: Estacion]) {
+    for estacion in diccionarioLinea.values {
+        let clave = normalizar(estacion.nombre)
+        indiceBusqueda[clave, default: []].append(estacion)
+    }
+}
+
+registrarEnIndice(estacionesLinea1)
+registrarEnIndice(estacionesLinea2)
+registrarEnIndice(estacionesLinea3)
+registrarEnIndice(estacionesLinea4)
+
+func buscarEstacion(_ entrada: String) -> [Estacion] {
+    let clave = normalizar(entrada)
+    return indiceBusqueda[clave] ?? []
+}
+
+// Resuelve qué estación mostrar cuando hay 0, 1 o varios resultados.
+// La usan tanto la búsqueda directa como la ficha técnica.
+func resolverEstacion(_ entrada: String) -> Estacion? {
+    let resultados = buscarEstacion(entrada)
+
+    switch resultados.count {
+    case 0:
+        print("Estación no localizada. Verifique el nombre e intente de nuevo.\n")
+        return nil
+    case 1:
+        return resultados[0]
+    default:
+        print("Se encontraron \(resultados.count) estaciones con ese nombre. ¿Cuál desea consultar?")
+        for (indice, estacion) in resultados.enumerated() {
+            print("\(indice + 1). \(estacion.nombre) - \(estacion.linea)")
+        }
+        // Optional binding (guard let): si el usuario no ingresa un número
+        // válido dentro del rango, no truena el programa, solo avisa.
+        guard let opcion = readLine(), let numero = Int(opcion), numero >= 1, numero <= resultados.count else {
+            print("Opción inválida.\n")
+            return nil
+        }
+        return resultados[numero - 1]
+    }
+}
+
+
