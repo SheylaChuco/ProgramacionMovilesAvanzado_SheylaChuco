@@ -364,3 +364,27 @@ func mostrarSubmenuLineas() {
     }
     print("")
 }
+
+// =====================================================================
+// COMMIT 6 — feat: implementa consulta de conexiones entre líneas (RF-04)
+// =====================================================================
+
+func mostrarConexionesEntreLineas() {
+    let estacionesConConexion = todasLasEstaciones
+        .filter { !$0.conexiones.isEmpty }
+        .sorted { $0.nombre < $1.nombre }
+
+    print("=====================================================")
+    print("ESTACIONES DE TRANSBORDO ENTRE LÍNEAS")
+    print("=====================================================")
+
+    if estacionesConConexion.isEmpty {
+        print("No se registran transbordos.")
+    } else {
+        for estacion in estacionesConConexion {
+            print("\(estacion.nombre) (\(estacion.linea)) -> conecta con: \(estacion.conexiones.joined(separator: ", "))")
+        }
+    }
+    print("")
+}
+
