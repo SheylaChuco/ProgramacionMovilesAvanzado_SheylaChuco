@@ -388,3 +388,19 @@ func mostrarConexionesEntreLineas() {
     print("")
 }
 
+// =====================================================================
+// COMMIT 7 — feat: implementa consulta de tarifas y horarios (RF-05)
+// =====================================================================
+
+func mostrarTarifasYHorarios() {
+    print("=====================================================")
+    print("TARIFAS Y HORARIOS")
+    print("=====================================================")
+    print("Línea 1: S/ 1.50 (Tarjeta propia L1)")
+    print("  Horario: Lunes a Sábado 05:00-22:00 | Domingos y feriados 05:30-22:00")
+    print("Línea 2: S/ 1.40 (Tarjeta Interoperable de Transporte - TIT)")
+    print("  Horario: 05:00-22:00 aprox. (dato oficial exacto no publicado)")
+    print("Línea 3 y Línea 4: Tarifas y horarios no definidos (líneas proyectadas)")
+    print("")
+}
+
