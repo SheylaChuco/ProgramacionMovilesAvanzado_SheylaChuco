@@ -38,3 +38,25 @@ class Sucursal {
     }
 }
 
+// --- TODO 15 ---
+class SucursalProvincia: Sucursal {
+    override func costoEnvio(monto: Double) -> Double {
+        let envio = monto * 0.08
+        if envio < 50.0 {
+            return 50.0
+        } else {
+            return envio
+        }
+    }
+}
+// >>> COMMIT 3: "feat: Caso 1.5 - SucursalProvincia hereda descuento, override envio"
+
+// --- TODO 16 ---
+class SucursalOutlet: Sucursal {
+    override func descuento() -> Double {
+        return 0.25
+    }
+    override func costoEnvio(monto: Double) -> Double {
+        return 0.0
+    }
+}
