@@ -60,3 +60,12 @@ class SucursalOutlet: Sucursal {
         return 0.0
     }
 }
+// --- TODO 16 ---
+class SucursalOutlet: Sucursal {
+    override func descuento() -> Double {
+        return 0.25
+    }
+    override func costoEnvio(monto: Double) -> Double {
+        return 0.0
+    }
+}
