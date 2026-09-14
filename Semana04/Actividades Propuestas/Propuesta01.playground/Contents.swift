@@ -65,3 +65,9 @@ func generarFactura(estudiante: Estudiante) {
     print("------------------------")
     print("TOTAL FINAL A PAGAR: S/ \(formato(totalFinal))")
 }
+var juan = Estudiante(nombre: "Juan León", dni: "78965412", esAlumnoTecsup: true)
+juan.cursos.append(CursoInscrito(nombre: "Swift Avanzado", cantidad: 1, precioUnitario: 450.00))
+juan.cursos.append(CursoInscrito(nombre: "IA con Python", cantidad: 2, precioUnitario: 650.00))
+juan.cursos.append(CursoInscrito(nombre: "Diseño UX/UI", cantidad: 1, precioUnitario: 500.00))
+
+generarFactura(estudiante: juan)
