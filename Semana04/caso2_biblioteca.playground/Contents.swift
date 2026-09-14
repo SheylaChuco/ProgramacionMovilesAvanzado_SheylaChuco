@@ -37,7 +37,19 @@ class Sucursal {
         print("\(nombre): \(item.nombre) -> S/ \(precioConDescuento) + envio S/ \(envio) = S/ \(total)")
     }
 }
-
+// --- TODO 14 ---
+class SucursalLima: Sucursal {
+    override func descuento() -> Double {
+        return 0.10
+    }
+    override func costoEnvio(monto: Double) -> Double {
+        if monto >= 1500 {
+            return 0.0
+        } else {
+            return 30.0
+        }
+    }
+}
 // --- TODO 15 ---
 class SucursalProvincia: Sucursal {
     override func costoEnvio(monto: Double) -> Double {
@@ -60,12 +72,29 @@ class SucursalOutlet: Sucursal {
         return 0.0
     }
 }
-// --- TODO 16 ---
-class SucursalOutlet: Sucursal {
-    override func descuento() -> Double {
-        return 0.25
-    }
+
+// --- TODO 17 y 18 ---
+let refrigeradora = Electrodomestico(nombre: "Refrigeradora", marca: "Frost", precioLista: 2000.0, categoria: .lineaBlanca)
+let licuadora = Electrodomestico(nombre: "Licuadora", marca: "Mix", precioLista: 250.0, categoria: .pequenos)
+
+let sucursales: [Sucursal] = [SucursalLima(nombre: "Lima Centro", ciudad: "Lima"),
+                               SucursalProvincia(nombre: "Provincia Cusco", ciudad: "Cusco"),
+                               SucursalOutlet(nombre: "Outlet Ate", ciudad: "Lima")]
+
+print("===== Refrigeradora (S/ 2000.0) =====")
+for sucursal in sucursales {
+    sucursal.cotizar(item: refrigeradora)
+}
+
+print("===== Licuadora (S/ 250.0) =====")
+for sucursal in sucursales {
+    sucursal.cotizar(item: licuadora)
+}
+
+class SucursalOnline: Sucursal {
     override func costoEnvio(monto: Double) -> Double {
-        return 0.0
+        return 15.0
     }
 }
+// Respuesta: solo necesité 4 líneas nuevas (la clase con su override).
+// No toqué cotizar() ni los for-in.
