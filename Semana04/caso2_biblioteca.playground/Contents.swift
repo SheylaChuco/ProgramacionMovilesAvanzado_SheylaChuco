@@ -98,3 +98,31 @@ class SucursalOnline: Sucursal {
 }
 // Respuesta: solo necesité 4 líneas nuevas (la clase con su override).
 // No toqué cotizar() ni los for-in.
+// --- FIX y PREDICT ---
+class SucursalMall: Sucursal {
+    override func descuento() -> Double {
+        // FIX 7: faltaba "override"; Swift lo exige para distinguir un
+        // reemplazo intencional de un método nuevo con el mismo nombre.
+        return 0.12
+    }
+}
+
+class SucursalExpress: Sucursal {
+    let radioKm: Int
+    init(nombre: String, ciudad: String, radioKm: Int) {
+        self.radioKm = radioKm
+        // FIX 8: faltaba super.init; la subclase debe delegar en el init
+        // del padre para inicializar nombre y ciudad.
+        super.init(nombre: nombre, ciudad: ciudad)
+    }
+}
+
+let misteriosa: Sucursal = SucursalLima(nombre: "Lima Centro", ciudad: "Lima")
+print(misteriosa.descuento())
+// PREDICT 6: imprime 0.10, porque el tipo real en memoria es SucursalLima
+// (Swift despacha según el tipo real, no el tipo declarado).
+
+let monto = 2000.0 * (1 - misteriosa.descuento())
+print(misteriosa.costoEnvio(monto: monto))
+// PREDICT 7: monto = 1800.0; como 1800 >= 1500, costoEnvio devuelve 0.0.
+
