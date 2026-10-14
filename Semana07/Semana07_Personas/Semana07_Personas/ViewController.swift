@@ -1,19 +1,56 @@
-//
-//  ViewController.swift
-//  Semana07_Personas
-//
-//  Created by Tecsup on 14/10/26.
-//
-
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
     }
 
+    // Definir los arreglos que carguen los nombres e imágenes
+    var personasArreglo = [
+        "Jaime Gomez",
+        "Juan León",
+        "Silvia Montoya ",
+        "Theo Diaz",
+        "Elliot Garamendi"
+    ]
 
+    var personasImagenarreglo = [
+        "avatar1",
+        "avatar2",
+        "avatar3",
+        "avatar4",
+        "avatar1"
+    ]
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return personasArreglo.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "celda") as? PersonasTableViewCell
+
+        cell?.PersonaNombre.text = "\(personasArreglo[indexPath.row])"
+
+        cell?.PersonaImagen.image = UIImage(named: "\(personasImagenarreglo[indexPath.row])")
+
+        return cell!
+    }
+
+    
+    // Método para mostrar la alerta al seleccionar un elemento
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let alerta = UIAlertController(
+            title: "El Docente que Selecciono es : ",
+            message: "\(personasArreglo[indexPath.row])",
+            preferredStyle: UIAlertController.Style.alert
+        )
+        
+        // Activar el botón OK
+        alerta.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.cancel, handler: { (action:UIAlertAction) in
+            // Acción opcional al cerrar el OK
+        }))
+        
+        self.present(alerta, animated: true, completion: nil)
+    }
 }
-

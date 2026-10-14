@@ -8,7 +8,11 @@
 import UIKit
 
 class PersonasTableViewCell: UITableViewCell {
-
+    
+    
+    @IBOutlet weak var PersonaNombre: UILabel!
+    
+    @IBOutlet weak var PersonaImagen: UIImageView!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
