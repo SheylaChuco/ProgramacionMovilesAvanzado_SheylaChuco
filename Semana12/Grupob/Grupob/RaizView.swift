@@ -1,8 +1,22 @@
-//
-//  RaizView.swift
-//  Grupob
-//
-//  Created by Tecsup on 18/11/26.
-//
+import SwiftUI
+import SwiftData
 
-import Foundation
+// Pantalla inicial: login si no hay sesión, pestañas si hay un usuario conectado
+struct RaizView: View {
+    @Environment(\.modelContext) private var contexto
+    @Environment(Sesion.self) private var sesion
+
+    var body: some View {
+        Group {
+            if sesion.usuario != nil {
+                PrincipalView()
+            } else {
+                LoginView()
+            }
+        }
+        .onAppear {
+            Datos.sembrarSiVacio(contexto)
+        }
+    }
+}
+
